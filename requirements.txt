@@ -1,16 +1,5 @@
-<<<<<<< HEAD
 streamlit
-torch
-scikit-learn
 pandas
 numpy
-matplotlib
-=======
-streamlit
-torch
 scikit-learn
-pandas
-numpy
-matplotlib
->>>>>>> 2f67b5a5ccbe32c514173a6bcafecf3d78a8e6e6
-plotly
+torch
