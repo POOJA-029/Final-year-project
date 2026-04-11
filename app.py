@@ -9,49 +9,32 @@ st.set_page_config(page_title="Final Year Project", layout="wide")
 st.title("Final Year Project 🚀")
 st.write("App started successfully ✅")
 
-# -------------------------------
-# Dataset selection
-# -------------------------------
 dataset = st.selectbox("Select Dataset", [
-    "benchmark_adult.csv",
     "finance_credit.csv",
+    "benchmark_adult.csv",
     "healthcare_diabetes.csv"
 ])
 
-# -------------------------------
-# Load dataset safely
-# -------------------------------
 try:
     df = pd.read_csv(dataset)
-    st.success(f"{dataset} loaded successfully ✅")
 
-    st.subheader("Dataset Preview")
+    # 🔥 FIX: convert all to numeric
+    df = df.apply(pd.to_numeric, errors='coerce')
+    df = df.fillna(0)
+
+    st.success("Dataset loaded successfully ✅")
     st.dataframe(df.head())
 
-    # -------------------------------
-    # Basic preprocessing (safe)
-    # -------------------------------
-    X = df.iloc[:, :-1]
-    y = df.iloc[:, -1]
+    X = df.iloc[:, :-1].values.astype(np.float32)
+    y = df.iloc[:, -1].values
 
-    X_tensor = torch.tensor(X.values, dtype=torch.float32)
+    model = nn.Linear(X.shape[1], 1)
 
-    # Dummy model (safe for deployment)
-    model = nn.Sequential(
-        nn.Linear(X.shape[1], 1),
-        nn.Sigmoid()
-    )
-
-    # -------------------------------
-    # Prediction (demo)
-    # -------------------------------
     with torch.no_grad():
-        outputs = model(X_tensor)
+        outputs = model(torch.tensor(X))
         preds = (outputs > 0.5).int().numpy()
 
-    st.subheader("Model Output (Demo)")
-    st.write("Predictions generated successfully ✅")
-
+    st.subheader("Predictions")
     st.write(preds[:10])
 
 except Exception as e:
